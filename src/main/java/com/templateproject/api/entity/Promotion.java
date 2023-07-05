@@ -46,7 +46,7 @@ public class Promotion {
     private List<Topic> topics;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private User author;
 
     public Promotion() {

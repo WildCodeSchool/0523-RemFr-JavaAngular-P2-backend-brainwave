@@ -29,19 +29,19 @@ public class Resource {
     private Promotion promotion;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "author_id")
+    private User author;
 
     public Resource() {
     }
 
-    public Resource(String title, String content, String link, LocalDateTime creationDate, Promotion promotion, User user) {
+    public Resource(String title, String content, String link, LocalDateTime creationDate, Promotion promotion, User author) {
         this.title = title;
         this.content = content;
         this.link = link;
         this.creationDate = creationDate;
         this.promotion = promotion;
-        this.user = user;
+        this.author = author;
     }
 
     public UUID getId() {
@@ -93,10 +93,10 @@ public class Resource {
     }
 
     public User getUser() {
-        return user;
+        return author;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(User author) {
+        this.author = author;
     }
 }

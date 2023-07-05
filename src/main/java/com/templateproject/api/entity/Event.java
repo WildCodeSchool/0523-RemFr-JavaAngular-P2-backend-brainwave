@@ -21,7 +21,7 @@ public class Event {
     private LocalDateTime date;
 
     @Column(nullable = false, name ="duration")
-    @Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime duration;
 
     @ManyToOne
@@ -33,8 +33,11 @@ public class Event {
     private User author;
 
     @ManyToMany
-    @JoinTable(name = "user_event",
-    joinColumns = @JoinColumn(name = "user_id"))
+    @JoinTable(
+            name = "event_user",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private List<User> participants;
 
     public Event(){}

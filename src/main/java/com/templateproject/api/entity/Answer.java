@@ -25,18 +25,18 @@ public class Answer {
     private Topic topic;
 
     @ManyToOne
-    @JoinColumn(name ="user_id")
-    private User user;
+    @JoinColumn(name ="author_id")
+    private User author;
 
     public Answer() {
     }
 
-    public Answer(String content, Integer upvote, LocalDateTime creationDate, Topic topic, User user) {
+    public Answer(String content, Integer upvote, LocalDateTime creationDate, Topic topic, User author) {
         this.content = content;
         this.upvote = upvote;
         this.creationDate = creationDate;
         this.topic = topic;
-        this.user = user;
+        this.author = author;
     }
 
     public UUID getId() {
@@ -80,10 +80,10 @@ public class Answer {
     }
 
     public User getUser() {
-        return user;
+        return author;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(User author) {
+        this.author = author;
     }
 }

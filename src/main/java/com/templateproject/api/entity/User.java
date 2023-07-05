@@ -26,28 +26,29 @@ public class User {
     @JsonIgnore
     private String password;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "author")
     private List<Promotion> promotions;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "author")
     private List<Answer> answers;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "author")
     private List<Resource> resources;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "author")
     private List<Topic> topics;
 
     @OneToMany(mappedBy = "author")
     private List<Event> eventsCreated;
 
-    @OneToMany(mappedBy = "participants")
-    private List<User> eventsParticipated;
+    @ManyToMany(mappedBy = "participants")
+    private List<Event> eventsParticipated;
+
 
     public User() {
     }
 
-    public User(String lastname, String firstname, Role role, String email, String password, List<Promotion> promotions, List<Answer> answers, List<Resource> resources, List<Topic> topics, List<Event> eventsCreated, List<User> eventsParticipated) {
+    public User(String lastname, String firstname, Role role, String email, String password, List<Promotion> promotions, List<Answer> answers, List<Resource> resources, List<Topic> topics, List<Event> eventsCreated, List<Event> eventsParticipated) {
         this.lastname = lastname;
         this.firstname = firstname;
         this.role = role;
@@ -149,11 +150,11 @@ public class User {
         this.eventsCreated = eventsCreated;
     }
 
-    public List<User> getEventsParticipated() {
+    public List<Event> getEventsParticipated() {
         return eventsParticipated;
     }
 
-    public void setEventsParticipated(List<User> eventsParticipated) {
+    public void setEventsParticipated(List<Event> eventsParticipated) {
         this.eventsParticipated = eventsParticipated;
     }
 }

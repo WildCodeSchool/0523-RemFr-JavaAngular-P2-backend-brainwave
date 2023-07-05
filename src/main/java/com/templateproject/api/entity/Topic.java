@@ -31,7 +31,7 @@ public class Topic {
     private Promotion promotion;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private User author;
 
     @OneToMany(mappedBy = "topic")
