@@ -36,7 +36,10 @@ public class Promotion {
     private LocalDateTime creationDate;
 
     @ManyToMany
-    @JoinColumn(name = "user_id")
+    @JoinTable(
+            name = "promotion_participants",
+            joinColumns = @JoinColumn(name = "promotion_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> participants;
 
     @OneToMany(mappedBy = "promotion")
