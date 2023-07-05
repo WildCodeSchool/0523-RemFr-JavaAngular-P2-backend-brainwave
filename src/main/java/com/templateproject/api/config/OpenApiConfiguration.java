@@ -17,8 +17,8 @@ public class OpenApiConfiguration {
 
     private Info apiInfo() {
         return new Info()
-                .title("NAME OF YOUR API")
-                .description("DESCRIPTION OF YOUR API")
+                .title("BrainWave")
+                .description("Pomme d'API")
                 .version("1.0")
                 .contact(apiContact())
                 .license(apiLicence());
@@ -32,9 +32,9 @@ public class OpenApiConfiguration {
 
     private Contact apiContact() {
         return new Contact()
-                .name("PROJECT GROUP NAME")
-                .email("EMAIL ADDRESS OF PROJECT GROUP")
-                .url("Project repo address");
+                .name("BRAINWAVE")
+                .email("HELENE@GOOGLE.COM")
+                .url("https://github.com/WildCodeSchool/0523-RemFr-JavaAngular-P2-backend-brainwave.git");
     }
 }
 
