@@ -1,6 +1,6 @@
 package com.templateproject.api.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class User {
     @Column(nullable = false, unique=true, name="email")
     private String email;
     @Column(nullable = false, name="password")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @OneToMany(mappedBy = "author")

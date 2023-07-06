@@ -3,6 +3,7 @@ package com.templateproject.api.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,10 +44,10 @@ public class Promotion {
     private List<User> participants;
 
     @OneToMany(mappedBy = "promotion")
-    private List<Resource> resources;
+    private List<Resource> resources = new ArrayList<>();
 
     @OneToMany(mappedBy = "promotion")
-    private List<Topic> topics;
+    private List<Topic> topics = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")
