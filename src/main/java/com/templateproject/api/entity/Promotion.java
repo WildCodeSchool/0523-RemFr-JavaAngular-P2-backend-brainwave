@@ -7,40 +7,42 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
-@Table(name ="promotion")
+@Table(name = "promotion")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Promotion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, name ="name")
+    @Column(nullable = false, name = "name")
     private String name;
 
-    @Column(nullable = false, name ="description")
+    @Column(nullable = false, name = "description")
     private String description;
 
-    @Column(name ="tag")
+    @Column(name = "tag")
     private String tag;
 
-    @Column(nullable = true, name ="rating")
+    @Column(nullable = false, name = "rating")
     private Float rating;
 
-    @Column(nullable = false, name ="difficulty")
+    @Column(nullable = false, name = "difficulty")
     private String difficulty;
 
-    @Column(nullable = false, name ="type")
+    @Column(nullable = false, name = "type")
     private String type;
 
-    @Column(nullable = false, name ="creation_date")
+    @Column(nullable = false, name = "creation_date")
     private LocalDateTime creationDate;
 
     @ManyToMany
-    @JoinTable(
-            name = "promotion_participants",
-            joinColumns = @JoinColumn(name = "promotion_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JoinTable(name = "promotion_participants", joinColumns = @JoinColumn(name = "promotion_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> participants;
 
     @OneToMany(mappedBy = "promotion")
@@ -50,13 +52,20 @@ public class Promotion {
     private List<Topic> topics = new ArrayList<>();
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id")
     private User author;
 
     public Promotion() {
     }
 
-    public Promotion(String name, String description, String tag, Float rating, String difficulty, String type, LocalDateTime creationDate, List<User> participants, List<Resource> resources, List<Topic> topics, User author) {
+    public UUID getId() {
+        return id;
+    }
+
+    public Promotion(String name, String description, String tag, Float rating, String difficulty, String type,
+            LocalDateTime creationDate, List<User> participants, List<Resource> resources, List<Topic> topics,
+            User author) {
         this.name = name;
         this.description = description;
         this.tag = tag;
@@ -68,10 +77,6 @@ public class Promotion {
         this.resources = resources;
         this.topics = topics;
         this.author = author;
-    }
-
-    public UUID getId() {
-        return id;
     }
 
     public void setId(UUID id) {

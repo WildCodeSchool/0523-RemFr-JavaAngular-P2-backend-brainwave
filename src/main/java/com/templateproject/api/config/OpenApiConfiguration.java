@@ -7,8 +7,10 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
+@EnableJpaRepositories("com.templateproject.api.repository")
 public class OpenApiConfiguration {
     @Bean
     public OpenAPI customOpenAPI() {
@@ -37,4 +39,3 @@ public class OpenApiConfiguration {
                 .url("https://github.com/WildCodeSchool/0523-RemFr-JavaAngular-P2-backend-brainwave.git");
     }
 }
-
