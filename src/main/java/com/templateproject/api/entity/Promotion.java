@@ -20,25 +20,25 @@ public class Promotion {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, name = "name")
+    @Column(nullable = true, name = "name")
     private String name;
 
-    @Column(nullable = false, name = "description")
+    @Lob @Column(nullable = true, name = "description")
     private String description;
 
     @Column(name = "tag")
     private String tag;
 
-    @Column(nullable = false, name = "rating")
+    @Column(nullable = true, name = "rating")
     private Float rating;
 
-    @Column(nullable = false, name = "difficulty")
+    @Column(nullable = true, name = "difficulty")
     private String difficulty;
 
-    @Column(nullable = false, name = "type")
+    @Column(nullable = true, name = "type")
     private String type;
 
-    @Column(nullable = false, name = "creation_date")
+    @Column(nullable = true, name = "creation_date")
     private LocalDateTime creationDate;
 
     @ManyToMany
@@ -59,10 +59,6 @@ public class Promotion {
     public Promotion() {
     }
 
-    public UUID getId() {
-        return id;
-    }
-
     public Promotion(String name, String description, String tag, Float rating, String difficulty, String type,
             LocalDateTime creationDate, List<User> participants, List<Resource> resources, List<Topic> topics,
             User author) {
@@ -77,6 +73,10 @@ public class Promotion {
         this.resources = resources;
         this.topics = topics;
         this.author = author;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public void setId(UUID id) {
@@ -169,5 +169,23 @@ public class Promotion {
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    @Override
+    public String toString() {
+        return "Promotion{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", tag='" + tag + '\'' +
+                ", rating=" + rating +
+                ", difficulty='" + difficulty + '\'' +
+                ", type='" + type + '\'' +
+                ", creationDate=" + creationDate +
+                ", participants=" + participants +
+                ", resources=" + resources +
+                ", topics=" + topics +
+                ", author=" + author +
+                '}';
     }
 }

@@ -4,7 +4,7 @@ import com.templateproject.api.entity.Promotion;
 import com.templateproject.api.entity.User;
 import com.templateproject.api.repository.PromotionRepository;
 import com.templateproject.api.repository.UserRepository;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/promotions")
@@ -38,7 +36,7 @@ public class PromotionController {
         if (optionalPromotion.isPresent()) {
             return optionalPromotion.get();
         } else {
-            throw new RuntimeException("Promotion not found");
+            throw new RuntimeException("Promotion not found" + id);
         }
     }
 
@@ -46,6 +44,7 @@ public class PromotionController {
     UserRepository userRepository;
 
     @PostMapping("/{userId}")
+    @ResponseStatus(HttpStatus.CREATED)
     public Promotion createPromotion(
             @PathVariable UUID userId,
             @RequestBody Promotion newPromotion) {
@@ -64,6 +63,7 @@ public class PromotionController {
     }
 
     @PutMapping("/{id}/{userId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public Promotion updatePromotion(
             @PathVariable UUID id,
             @PathVariable UUID userId,
@@ -71,7 +71,7 @@ public class PromotionController {
         User user = userRepository
                 .findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "User not found!"));
+                        HttpStatus.NOT_FOUND, "User not found!" + userId));
 
         Promotion updatePromotion = promotionRepository
                 .findById(id)
@@ -86,13 +86,20 @@ public class PromotionController {
         updatePromotion.setRating(updatedPromotion.getRating());
         updatePromotion.setDifficulty(updatedPromotion.getDifficulty());
         updatePromotion.setType(updatedPromotion.getType());
+        System.out.println(updatedPromotion);
+        return this.promotionRepository.save(updatePromotion);
 
-        Promotion promotionUpdated = this.promotionRepository.save(updatePromotion);
-        return promotionUpdated;
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable UUID id) {
         this.promotionRepository.deleteById(id);
     }
+
+    @PostMapping("/search")
+    public List<Promotion> search(@RequestBody Map<String, String> body) {
+        String searchTerm = body.get("content");
+        return promotionRepository.findPromotionsByTagOrNameContaining(searchTerm ,searchTerm);
+    }
+
 }
