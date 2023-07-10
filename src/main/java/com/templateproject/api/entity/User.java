@@ -1,5 +1,6 @@
 package com.templateproject.api.entity;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -11,7 +12,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table (name="user")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@Table(name = "user")
 public class User {
 
     @Id
@@ -53,11 +55,12 @@ public class User {
     @ManyToMany(mappedBy = "participants")
     private List<Event> eventsParticipated;
 
-
     public User() {
     }
 
-    public User(String lastname, String firstname, Role role, String email, String password, List<Promotion> promotions, List<Answer> answers, List<Resource> resources, List<Topic> topics, List<Event> eventsCreated, List<Event> eventsParticipated) {
+    public User(String lastname, String firstname, Role role, String email, String password, List<Promotion> promotions,
+            List<Answer> answers, List<Resource> resources, List<Topic> topics, List<Event> eventsCreated,
+            List<Event> eventsParticipated) {
         this.lastname = lastname;
         this.firstname = firstname;
         this.role = role;
