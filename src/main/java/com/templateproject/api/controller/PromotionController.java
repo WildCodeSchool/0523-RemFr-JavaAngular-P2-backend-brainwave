@@ -36,7 +36,7 @@ public class PromotionController {
         if (optionalPromotion.isPresent()) {
             return optionalPromotion.get();
         } else {
-            throw new RuntimeException("Promotion not found" + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Promotion not found" + id);
         }
     }
 
@@ -58,7 +58,7 @@ public class PromotionController {
         newPromotion.setCreationDate(localDateTimeNow);
         newPromotion.setAuthor(user);
 
-        System.out.println(newPromotion);
+
         return this.promotionRepository.save(newPromotion);
     }
 
@@ -86,7 +86,7 @@ public class PromotionController {
         updatePromotion.setRating(updatedPromotion.getRating());
         updatePromotion.setDifficulty(updatedPromotion.getDifficulty());
         updatePromotion.setType(updatedPromotion.getType());
-        System.out.println(updatedPromotion);
+
         return this.promotionRepository.save(updatePromotion);
 
     }
