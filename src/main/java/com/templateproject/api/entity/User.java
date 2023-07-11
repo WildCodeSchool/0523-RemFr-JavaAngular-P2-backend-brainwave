@@ -1,10 +1,14 @@
 package com.templateproject.api.entity;
 
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,16 +21,21 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @Column(nullable = false, name = "lastname")
+
+    @Column(nullable = false, name ="lastname")
     private String lastname;
-    @Column(nullable = false, name = "firstname")
+
+    @Column(nullable = false, name="firstname")
     private String firstname;
-    @Column(nullable = false, name = "role")
+
+    @Column(nullable = false, name="role")
     @Enumerated(EnumType.STRING)
     private Role role;
-    @Column(nullable = false, unique = true, name = "email")
+
+    @Column(nullable = false, unique=true, name="email")
     private String email;
-    @Column(nullable = false, name = "password")
+
+    @Column(nullable = false, name="password")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
