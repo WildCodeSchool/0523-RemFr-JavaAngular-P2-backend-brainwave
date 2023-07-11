@@ -27,7 +27,7 @@ public class TopicController {
 
         this.topicRepository = topicRepository;
         this.promotionRepository = promotionRepository;
-        this.userRepository =userRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/promotions/{id}")

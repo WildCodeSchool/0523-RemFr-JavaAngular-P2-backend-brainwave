@@ -41,11 +41,11 @@ public class Topic {
     public Topic() {
     }
 
-    public Topic(String title, String content, LocalDateTime creationDate, Integer upvote, Promotion promotion, User author, List<Answer> answers) {
+    public Topic(String title, String content, LocalDateTime creationDate, Float upvote, Promotion promotion, User author, List<Answer> answers) {
         this.title = title;
         this.content = content;
         this.creationDate = creationDate;
-        this.upvote = Float.valueOf(upvote);
+        this.upvote = upvote;
         this.promotion = promotion;
         this.author = author;
         this.answers = answers;

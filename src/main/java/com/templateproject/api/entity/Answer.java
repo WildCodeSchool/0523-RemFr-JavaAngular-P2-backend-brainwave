@@ -34,9 +34,9 @@ public class Answer {
     public Answer() {
     }
 
-    public Answer(String content, Integer upvote, LocalDateTime creationDate, Topic topic, User author) {
+    public Answer(String content, Float upvote, LocalDateTime creationDate, Topic topic, User author) {
         this.content = content;
-        this.upvote = Float.valueOf(upvote);
+        this.upvote = upvote;
         this.creationDate = creationDate;
         this.topic = topic;
         this.author = author;
