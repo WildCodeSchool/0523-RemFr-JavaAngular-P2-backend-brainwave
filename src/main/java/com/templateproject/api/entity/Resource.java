@@ -24,7 +24,7 @@ public class Resource {
     @Column(nullable = false, name = "creation_date")
     private LocalDateTime creationDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "promotion_id")
     private Promotion promotion;
 

@@ -23,7 +23,7 @@ public class Answer {
     @Column(nullable = false, name ="creation_date")
     private LocalDateTime creationDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id")
     private Topic topic;
 
@@ -63,7 +63,7 @@ public class Answer {
     }
 
     public void setUpvote(Float upvote) {
-        this.upvote = Float.valueOf(upvote);
+        this.upvote = upvote;
     }
 
     public LocalDateTime getCreationDate() {

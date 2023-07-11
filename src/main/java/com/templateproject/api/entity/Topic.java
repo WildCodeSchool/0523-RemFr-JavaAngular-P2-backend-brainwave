@@ -26,7 +26,7 @@ public class Topic {
     @Column(nullable = true, name ="upvote")
     private Float upvote;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="promotion_id")
     private Promotion promotion;
 
@@ -34,7 +34,7 @@ public class Topic {
     @JoinColumn(name = "user_id")
     private User author;
 
-    @OneToMany(mappedBy = "topic")
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.REMOVE)
     private List<Answer> answers;
 
 

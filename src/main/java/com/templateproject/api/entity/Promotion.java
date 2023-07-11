@@ -45,10 +45,10 @@ public class Promotion {
     @JoinTable(name = "promotion_participants", joinColumns = @JoinColumn(name = "promotion_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> participants;
 
-    @OneToMany(mappedBy = "promotion")
+    @OneToMany(mappedBy = "promotion", cascade = CascadeType.REMOVE)
     private List<Resource> resources = new ArrayList<>();
 
-    @OneToMany(mappedBy = "promotion")
+    @OneToMany(mappedBy = "promotion", cascade = CascadeType.REMOVE)
     private List<Topic> topics = new ArrayList<>();
 
     @ManyToOne
