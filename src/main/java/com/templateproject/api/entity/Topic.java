@@ -24,7 +24,7 @@ public class Topic {
     private LocalDateTime creationDate;
 
     @Column(nullable = true, name ="upvote")
-    private Integer upvote;
+    private Float upvote;
 
     @ManyToOne
     @JoinColumn(name ="promotion_id")
@@ -41,7 +41,7 @@ public class Topic {
     public Topic() {
     }
 
-    public Topic(String title, String content, LocalDateTime creationDate, Integer upvote, Promotion promotion, User author, List<Answer> answers) {
+    public Topic(String title, String content, LocalDateTime creationDate, Float upvote, Promotion promotion, User author, List<Answer> answers) {
         this.title = title;
         this.content = content;
         this.creationDate = creationDate;
@@ -83,12 +83,12 @@ public class Topic {
         this.creationDate = creationDate;
     }
 
-    public Integer getUpvote() {
+    public Float getUpvote() {
         return upvote;
     }
 
-    public void setUpvote(Integer upvote) {
-        this.upvote = upvote;
+    public void setUpvote(Float upvote) {
+        this.upvote = Float.valueOf(upvote);
     }
 
     public Promotion getPromotion() {
@@ -113,5 +113,19 @@ public class Topic {
 
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
+    }
+
+    @Override
+    public String toString() {
+        return "Topic{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", creationDate=" + creationDate +
+                ", upvote=" + upvote +
+                ", promotion=" + promotion +
+                ", author=" + author +
+                ", answers=" + answers +
+                '}';
     }
 }

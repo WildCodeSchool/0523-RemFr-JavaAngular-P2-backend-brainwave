@@ -1,11 +1,14 @@
 package com.templateproject.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Table(name="answer")
 public class Answer {
 
@@ -16,7 +19,7 @@ public class Answer {
     @Lob
     private String content;
     @Column(nullable = true, name ="upvote")
-    private Integer upvote;
+    private Float upvote;
     @Column(nullable = false, name ="creation_date")
     private LocalDateTime creationDate;
 
@@ -31,7 +34,7 @@ public class Answer {
     public Answer() {
     }
 
-    public Answer(String content, Integer upvote, LocalDateTime creationDate, Topic topic, User author) {
+    public Answer(String content, Float upvote, LocalDateTime creationDate, Topic topic, User author) {
         this.content = content;
         this.upvote = upvote;
         this.creationDate = creationDate;
@@ -55,12 +58,12 @@ public class Answer {
         this.content = content;
     }
 
-    public Integer getUpvote() {
+    public Float getUpvote() {
         return upvote;
     }
 
-    public void setUpvote(Integer upvote) {
-        this.upvote = upvote;
+    public void setUpvote(Float upvote) {
+        this.upvote = Float.valueOf(upvote);
     }
 
     public LocalDateTime getCreationDate() {
