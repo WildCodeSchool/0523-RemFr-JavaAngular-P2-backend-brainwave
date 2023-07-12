@@ -106,4 +106,7 @@ public class Event {
     public void setParticipants(List<User> participants) {
         this.participants = participants;
     }
+
+    public void setCreationDate(LocalDateTime localDateTimeNow) {
+    }
 }
