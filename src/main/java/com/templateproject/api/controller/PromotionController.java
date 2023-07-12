@@ -83,5 +83,5 @@ public class PromotionController {
         String searchTerm = body.get("content");
         return promotionRepository.findPromotionsByTagOrNameContaining(searchTerm, searchTerm);
     }
-//47f4d7e7-132f-4532-9147-c75a0331d387 userID:04895e78-4ef2-426d-b577-d3e7a1b9870b
+
 }
