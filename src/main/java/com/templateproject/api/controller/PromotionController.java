@@ -1,13 +1,16 @@
 package com.templateproject.api.controller;
 
 import com.templateproject.api.entity.Promotion;
+import com.templateproject.api.entity.Topic;
 import com.templateproject.api.entity.User;
 import com.templateproject.api.repository.PromotionRepository;
 import com.templateproject.api.repository.UserRepository;
-
+import com.templateproject.api.service.BeanUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -36,7 +39,7 @@ public class PromotionController {
         if (optionalPromotion.isPresent()) {
             return optionalPromotion.get();
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Promotion not found" + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Promotion not found" + id);
         }
     }
 
@@ -58,37 +61,16 @@ public class PromotionController {
         newPromotion.setCreationDate(localDateTimeNow);
         newPromotion.setAuthor(user);
 
-
         return this.promotionRepository.save(newPromotion);
     }
 
-    @PutMapping("/{id}/{userId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public Promotion updatePromotion(
-            @PathVariable UUID id,
-            @PathVariable UUID userId,
-            @RequestBody Promotion updatedPromotion) {
-        User user = userRepository
-                .findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "User not found!" + userId));
-
-        Promotion updatePromotion = promotionRepository
-                .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND));
-
-        LocalDateTime localDateTimeNow = LocalDateTime.now();
-        updatePromotion.setCreationDate(localDateTimeNow);
-        updatePromotion.setName(updatedPromotion.getName());
-        updatePromotion.setDescription(updatedPromotion.getDescription());
-        updatePromotion.setTag(updatedPromotion.getTag());
-        updatePromotion.setRating(updatedPromotion.getRating());
-        updatePromotion.setDifficulty(updatedPromotion.getDifficulty());
-        updatePromotion.setType(updatedPromotion.getType());
-
-        return this.promotionRepository.save(updatePromotion);
-
+    @PutMapping("/{id}/users/{userId}")
+    public ResponseEntity<Promotion> updatePromotion(@PathVariable UUID userId, @PathVariable UUID id,
+            @RequestBody @Validated Topic updatedPromotion) {
+        return this.promotionRepository.findById(id).map(promotion -> {
+            BeanUtils.copyNonNullProperties(updatedPromotion, promotion);
+            return ResponseEntity.ok(promotionRepository.save(promotion));
+        }).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
@@ -99,7 +81,7 @@ public class PromotionController {
     @PostMapping("/search")
     public List<Promotion> search(@RequestBody Map<String, String> body) {
         String searchTerm = body.get("content");
-        return promotionRepository.findPromotionsByTagOrNameContaining(searchTerm ,searchTerm);
+        return promotionRepository.findPromotionsByTagOrNameContaining(searchTerm, searchTerm);
     }
 
 }

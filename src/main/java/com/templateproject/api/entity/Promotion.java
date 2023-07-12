@@ -1,5 +1,6 @@
 package com.templateproject.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -42,13 +43,17 @@ public class Promotion {
     private LocalDateTime creationDate;
 
     @ManyToMany
+
     @JoinTable(name = "promotion_participants", joinColumns = @JoinColumn(name = "promotion_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> participants;
 
-    @OneToMany(mappedBy = "promotion")
+    @OneToMany(mappedBy = "promotion", cascade = CascadeType.REMOVE)
+
     private List<Resource> resources = new ArrayList<>();
 
-    @OneToMany(mappedBy = "promotion")
+
+    @OneToMany(mappedBy = "promotion", cascade = CascadeType.REMOVE)
+    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Topic> topics = new ArrayList<>();
 
     @ManyToOne
