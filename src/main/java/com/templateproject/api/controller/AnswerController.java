@@ -9,10 +9,9 @@ import com.templateproject.api.repository.AnswerRepository;
 import com.templateproject.api.repository.TopicRepository;
 import com.templateproject.api.repository.UserRepository;
 
-// import com.templateproject.api.service.BeanUtils;
 import com.templateproject.api.service.BeanUtils;
 import org.springframework.http.HttpStatus;
-// import org.springframework.http.ResponseEntity;
+
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

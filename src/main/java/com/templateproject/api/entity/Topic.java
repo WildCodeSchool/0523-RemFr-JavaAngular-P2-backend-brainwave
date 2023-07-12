@@ -32,7 +32,7 @@ public class Topic {
     private Float upvote;
 
    @ManyToOne(fetch = FetchType.EAGER)
-   //@ManyToOne
+
     @JoinColumn(name = "promotion_id")
     private Promotion promotion;
 
@@ -40,7 +40,7 @@ public class Topic {
     @JoinColumn(name = "user_id")
     private User author;
 
-    //@OneToMany(mappedBy = "topic")
+
     @OneToMany(mappedBy = "topic", cascade = CascadeType.REMOVE)
     private List<Answer> answers;
 
