@@ -1,5 +1,8 @@
 package com.templateproject.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -7,41 +10,45 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name="topic")
+@Table(name = "topic")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+
 public class Topic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, name ="title")
+    @Column(nullable = false, name = "title")
     private String title;
-    @Column(nullable = false, name ="content")
+    @Column(nullable = false, name = "content")
     @Lob
     private String content;
 
-    @Column(nullable = false, name ="creation_date")
+    @Column(nullable = false, name = "creation_date")
     private LocalDateTime creationDate;
 
-    @Column(nullable = true, name ="upvote")
+    @Column(nullable = true, name = "upvote")
     private Float upvote;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="promotion_id")
+   @ManyToOne(fetch = FetchType.EAGER)
+   //@ManyToOne
+    @JoinColumn(name = "promotion_id")
     private Promotion promotion;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User author;
 
+    //@OneToMany(mappedBy = "topic")
     @OneToMany(mappedBy = "topic", cascade = CascadeType.REMOVE)
     private List<Answer> answers;
-
 
     public Topic() {
     }
 
-    public Topic(String title, String content, LocalDateTime creationDate, Float upvote, Promotion promotion, User author, List<Answer> answers) {
+    public Topic(String title, String content, LocalDateTime creationDate, Float upvote, Promotion promotion,
+            User author, List<Answer> answers) {
         this.title = title;
         this.content = content;
         this.creationDate = creationDate;

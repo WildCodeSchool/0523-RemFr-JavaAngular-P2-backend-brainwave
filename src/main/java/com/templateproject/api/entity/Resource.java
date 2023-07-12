@@ -1,11 +1,14 @@
 package com.templateproject.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Table(name="resource")
 public class Resource {
 
@@ -24,7 +27,7 @@ public class Resource {
     @Column(nullable = false, name = "creation_date")
     private LocalDateTime creationDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "promotion_id")
     private Promotion promotion;
 
@@ -92,11 +95,11 @@ public class Resource {
         this.promotion = promotion;
     }
 
-    public User getUser() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setUser(User author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 }

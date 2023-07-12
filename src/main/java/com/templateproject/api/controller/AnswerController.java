@@ -9,7 +9,13 @@ import com.templateproject.api.repository.AnswerRepository;
 import com.templateproject.api.repository.TopicRepository;
 import com.templateproject.api.repository.UserRepository;
 
+// import com.templateproject.api.service.BeanUtils;
+import com.templateproject.api.service.BeanUtils;
 import org.springframework.http.HttpStatus;
+// import org.springframework.http.ResponseEntity;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -21,28 +27,30 @@ import java.util.UUID;
 @RestController
 @RequestMapping("answers")
 public class AnswerController {
-    private final AnswerRepository  answerRepository;
+    private final AnswerRepository answerRepository;
     private final UserRepository userRepository;
     private final TopicRepository topicRepository;
+
     public AnswerController(AnswerRepository answerRepository,
-                            UserRepository userRepository,
-                            TopicRepository topicRepository){
+            UserRepository userRepository,
+            TopicRepository topicRepository) {
         this.answerRepository = answerRepository;
-        this.userRepository =userRepository;
-        this.topicRepository =topicRepository;
+        this.userRepository = userRepository;
+        this.topicRepository = topicRepository;
     }
 
     @GetMapping("")
-    public List<Answer> index (){
+    public List<Answer> index() {
         return this.answerRepository.findAll();
     }
+
     @GetMapping("/{id}")
     public Answer show(@PathVariable UUID id) {
         Optional<Answer> optionalAnswer = this.answerRepository.findById(id);
         if (optionalAnswer.isPresent()) {
             return optionalAnswer.get();
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Promotion not found" + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Promotion not found" + id);
         }
     }
 
@@ -63,35 +71,21 @@ public class AnswerController {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Topic not found: " + topicId));
 
-
         LocalDateTime localDateTimeNow = LocalDateTime.now();
         newAnswer.setCreationDate(localDateTimeNow);
         newAnswer.setUser(user);
         newAnswer.setTopic(topic);
         return this.answerRepository.save(newAnswer);
     }
+
+
     @PutMapping("/{id}/topics/{topicId}")
-    public Answer updateAnswer(@PathVariable UUID id,
-
-                               @PathVariable UUID topicId,
-                               @RequestBody Answer updatedAnswer) {
-
-        Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Topic not found: " + topicId));
-
-        Answer answer = answerRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Answer not found: " + id));
-
-        LocalDateTime localDateTimeNow = LocalDateTime.now();
-        updatedAnswer.setCreationDate(localDateTimeNow);
-        updatedAnswer.setTopic(topic);
-        updatedAnswer.setContent(updatedAnswer.getContent());
-        updatedAnswer.setContent(updatedAnswer.getContent());
-        updatedAnswer.setUpvote(updatedAnswer.getUpvote());
-        updatedAnswer.setTopic(updatedAnswer.getTopic());
-        return answerRepository.save(updatedAnswer);
+    public ResponseEntity<Answer> updateAnswer(@PathVariable UUID topicId, @PathVariable UUID id,
+            @RequestBody @Validated Answer updatedAnswer) {
+        return this.answerRepository.findById(id).map(answer -> {
+            BeanUtils.copyNonNullProperties(updatedAnswer, answer);
+            return ResponseEntity.ok(answerRepository.save(answer));
+        }).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
@@ -99,4 +93,4 @@ public class AnswerController {
         this.answerRepository.deleteById(id);
     }
 
-
+}

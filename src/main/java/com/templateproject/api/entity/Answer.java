@@ -23,7 +23,8 @@ public class Answer {
     @Column(nullable = false, name ="creation_date")
     private LocalDateTime creationDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    //@ManyToOne
     @JoinColumn(name = "topic_id")
     private Topic topic;
 

@@ -1,13 +1,17 @@
 package com.templateproject.api.controller;
 
+import com.templateproject.api.entity.Answer;
 import com.templateproject.api.entity.Promotion;
 import com.templateproject.api.entity.Topic;
 import com.templateproject.api.entity.User;
 import com.templateproject.api.repository.PromotionRepository;
 import com.templateproject.api.repository.TopicRepository;
 import com.templateproject.api.repository.UserRepository;
+import com.templateproject.api.service.BeanUtils;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,7 +27,8 @@ public class TopicController {
     private final UserRepository userRepository;
     private final PromotionRepository promotionRepository;
 
-    public TopicController(TopicRepository topicRepository, PromotionRepository promotionRepository,UserRepository userRepository) {
+    public TopicController(TopicRepository topicRepository, PromotionRepository promotionRepository,
+            UserRepository userRepository) {
 
         this.topicRepository = topicRepository;
         this.promotionRepository = promotionRepository;
@@ -36,20 +41,22 @@ public class TopicController {
     }
 
     @GetMapping("/{id}")
-    public Topic show(@PathVariable UUID id){
+    public Topic show(@PathVariable UUID id) {
         Optional<Topic> optionalTopic = this.topicRepository.findById(id);
 
         if (optionalTopic.isPresent()) {
             return optionalTopic.get();
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Promotion not found " + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Promotion not found " + id);
         }
 
-}
+    }
+
     @GetMapping("/{id}/promotions/{promoId}")
     public List<Topic> getTopicsByPromotionId(@PathVariable UUID promoId, @PathVariable UUID id) {
         return topicRepository.findByPromotionId(promoId);
     }
+
     @GetMapping("/{id}/users/{userId}")
     public List<Topic> getTopicsByUser(@PathVariable UUID userId, @PathVariable String id) {
         User user = userRepository.findById(userId)
@@ -57,6 +64,7 @@ public class TopicController {
 
         return topicRepository.findByAuthor(user);
     }
+
     @PostMapping("/promotions/{promoId}/user/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
     public Topic createTopic(
@@ -78,30 +86,19 @@ public class TopicController {
 
         return this.topicRepository.save(newTopic);
     }
+
     @PutMapping("/{id}/promotions/{promoId}")
-    public Topic updateTopic(@PathVariable UUID id, @PathVariable UUID promoId, @RequestBody Topic updatedTopic) {
-        Promotion promotion = promotionRepository.findById(promoId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Promotion not found: " + promoId));
-
-        Topic topic = topicRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Topic not found: " + id));
-
-        LocalDateTime localDateTimeNow = LocalDateTime.now();
-        topic.setCreationDate(localDateTimeNow);
-        topic.setTitle(updatedTopic.getTitle());
-        topic.setContent(updatedTopic.getContent());
-        topic.setUpvote(updatedTopic.getUpvote());
-        topic.setPromotion(promotion);
-        topic.setAuthor(updatedTopic.getAuthor());
-        topic.setAnswers(updatedTopic.getAnswers());
-
-        return topicRepository.save(topic);
+    public ResponseEntity<Topic> updateTopic(@PathVariable UUID promoId, @PathVariable UUID id,
+            @RequestBody @Validated Topic updatedTopic) {
+        return this.topicRepository.findById(id).map(topic -> {
+            BeanUtils.copyNonNullProperties(updatedTopic, topic);
+            return ResponseEntity.ok(topicRepository.save(topic));
+        }).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable UUID id) {
         this.topicRepository.deleteById(id);
     }
-
 
 }
