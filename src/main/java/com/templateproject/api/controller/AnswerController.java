@@ -79,7 +79,8 @@ public class AnswerController {
 
 
     @PutMapping("/{id}/topics/{topicId}")
-    public ResponseEntity<Answer> updateAnswer(@PathVariable UUID topicId, @PathVariable UUID id,
+    public ResponseEntity<Answer> updateAnswer(@PathVariable UUID topicId,
+                                               @PathVariable UUID id,
             @RequestBody @Validated Answer updatedAnswer) {
         return this.answerRepository.findById(id).map(answer -> {
             BeanUtils.copyNonNullProperties(updatedAnswer, answer);

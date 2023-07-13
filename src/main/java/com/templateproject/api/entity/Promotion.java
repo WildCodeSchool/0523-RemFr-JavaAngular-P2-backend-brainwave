@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -43,12 +41,12 @@ public class Promotion {
     private LocalDateTime creationDate;
 
     @ManyToMany
-
-    @JoinTable(name = "promotion_participants", joinColumns = @JoinColumn(name = "promotion_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> participants;
+    @JoinTable(name = "promotion_participants",
+            joinColumns = @JoinColumn(name = "promotion_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> participants = new HashSet<>();
 
     @OneToMany(mappedBy = "promotion", cascade = CascadeType.REMOVE)
-
     private List<Resource> resources = new ArrayList<>();
 
 
@@ -65,7 +63,7 @@ public class Promotion {
     }
 
     public Promotion(String name, String description, String tag, Float rating, String difficulty, String type,
-            LocalDateTime creationDate, List<User> participants, List<Resource> resources, List<Topic> topics,
+            LocalDateTime creationDate, Set<User> participants, List<Resource> resources, List<Topic> topics,
             User author) {
         this.name = name;
         this.description = description;
@@ -144,11 +142,11 @@ public class Promotion {
         this.creationDate = creationDate;
     }
 
-    public List<User> getParticipants() {
+    public Set<User> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(List<User> participants) {
+    public void setParticipants(Set<User> participants) {
         this.participants = participants;
     }
 

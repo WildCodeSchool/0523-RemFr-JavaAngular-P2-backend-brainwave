@@ -58,7 +58,8 @@ public class TopicController {
     }
 
     @GetMapping("/{id}/users/{userId}")
-    public List<Topic> getTopicsByUser(@PathVariable UUID userId, @PathVariable String id) {
+    public List<Topic> getTopicsByUser(@PathVariable UUID userId,
+                                       @PathVariable String id) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + userId));
 
@@ -88,7 +89,8 @@ public class TopicController {
     }
 
     @PutMapping("/{id}/promotions/{promoId}")
-    public ResponseEntity<Topic> updateTopic(@PathVariable UUID promoId, @PathVariable UUID id,
+    public ResponseEntity<Topic> updateTopic(@PathVariable UUID promoId,
+                                             @PathVariable UUID id,
             @RequestBody @Validated Topic updatedTopic) {
         return this.topicRepository.findById(id).map(topic -> {
             BeanUtils.copyNonNullProperties(updatedTopic, topic);

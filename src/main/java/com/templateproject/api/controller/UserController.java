@@ -1,15 +1,17 @@
 package com.templateproject.api.controller;
 
+import com.templateproject.api.DTO.UserDTO;
+import com.templateproject.api.DTO.UserDTOMapper;
 import com.templateproject.api.entity.User;
 import com.templateproject.api.repository.UserRepository;
 import com.templateproject.api.service.BeanUtils;
+import com.templateproject.api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -17,21 +19,29 @@ import java.util.UUID;
 public class UserController {
   
     private final UserRepository userRepository;
+    private final UserDTOMapper userDTOMapper;
 
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, UserDTOMapper userDTOMapper) {
         this.userRepository = userRepository;
+        this.userDTOMapper = userDTOMapper;
     }
 
-    @GetMapping
+   /* @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userRepository.findAll());
-    }
+    }*/
 
-    @GetMapping("/{id}")
+   @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable UUID id) {
         return userRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+    @GetMapping("")
+    public List<UserDTO> getAllUsers() {
+        UserService userService = new UserService(userRepository, userDTOMapper);
+        List<UserDTO> userDTOs = userService.findAllUsers();
+        return userDTOs;
     }
 
     @PostMapping

@@ -2,16 +2,11 @@ package com.templateproject.api.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -41,7 +36,8 @@ public class User {
 
     @OneToMany(mappedBy = "author")
     private List<Promotion> promotions;
-
+    @ManyToMany(mappedBy = "participants")
+    private Set<Promotion> promotionsParticipants = new HashSet<>();
     @OneToMany(mappedBy = "author")
     private List<Answer> answers;
 
@@ -170,5 +166,13 @@ public class User {
 
     public void setEventsParticipated(List<Event> eventsParticipated) {
         this.eventsParticipated = eventsParticipated;
+    }
+
+    public Set<Promotion> getPromotionsParticipants() {
+        return promotionsParticipants;
+    }
+
+    public void setPromotionsParticipants(Set<Promotion> promotionsParticipants) {
+        this.promotionsParticipants = promotionsParticipants;
     }
 }

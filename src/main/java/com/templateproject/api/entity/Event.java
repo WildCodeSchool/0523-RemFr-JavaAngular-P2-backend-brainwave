@@ -1,5 +1,7 @@
 package com.templateproject.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -7,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class , property = "id")
 @Table(name="event")
 public class Event {
 
@@ -20,8 +23,7 @@ public class Event {
     @Column(nullable = false, name ="date")
     private LocalDateTime date;
 
-    @Column(nullable = false, name ="duration")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false, name = "duration", columnDefinition = "TIMESTAMP")
     private LocalDateTime duration;
 
     @ManyToOne
@@ -42,7 +44,8 @@ public class Event {
 
     public Event(){}
 
-    public Event(String title, LocalDateTime date, LocalDateTime duration, Promotion promotion, User author, List<User> participants) {
+    public Event(UUID id, String title, LocalDateTime date, LocalDateTime duration, Promotion promotion, User author, List<User> participants) {
+        this.id = id;
         this.title = title;
         this.date = date;
         this.duration = duration;
@@ -107,3 +110,4 @@ public class Event {
         this.participants = participants;
     }
 }
+

@@ -55,7 +55,8 @@ public class ResourceController {
          return this.resourceRepository.save(newResource);
      }
     @PutMapping("/{id}")
-    public ResponseEntity<Resource> updateResource(@PathVariable UUID id, @RequestBody @Validated  Resource updatedResource) {
+    public ResponseEntity<Resource> updateResource(@PathVariable UUID id,
+                                                   @RequestBody @Validated  Resource updatedResource) {
         return resourceRepository.findById(id).map(resource-> {
             BeanUtils.copyNonNullProperties(updatedResource, resource);
             return ResponseEntity.ok(resourceRepository.save(resource));
