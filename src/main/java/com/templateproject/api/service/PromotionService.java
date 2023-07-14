@@ -1,7 +1,7 @@
 package com.templateproject.api.service;
 
 import com.templateproject.api.DTO.PromotionDTO;
-import com.templateproject.api.DTO.PromotionDTOMapper;
+import com.templateproject.api.DtoMapper.PromotionDTOMapper;
 import com.templateproject.api.entity.Promotion;
 import com.templateproject.api.repository.PromotionRepository;
 import com.templateproject.api.repository.UserRepository;
@@ -18,9 +18,10 @@ public class PromotionService {
 
 
 
-    public PromotionService(PromotionRepository promotionRepository, PromotionDTOMapper promotionDTOMapper) {
+    public PromotionService(PromotionRepository promotionRepository, PromotionDTOMapper promotionDTOMapper, UserRepository userRepository) {
         PromotionService.promotionRepository = promotionRepository;
         PromotionService.promotionDTOMapper = promotionDTOMapper;
+
 
     }
 
@@ -30,28 +31,27 @@ public class PromotionService {
 
     }
 
-   /* public PromotionDTO createPromotion(UUID userId, PromotionDTO newPromotionDTO) {
-
+   /* public static PromotionDTO createPromotion(UUID userId,
+                                               PromotionDTO newPromotion, LocalDateTime localDateTimeNow) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found: " + userId));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User not found with ID: " + userId));
 
 
-        PromotionDTO newPromotion = promotionDTOMapper.convertToEntity(newPromotionDTO);
+        newPromotion = new PromotionDTO(
+                UUID.randomUUID(),
+                newPromotion.name(),
+                newPromotion.tag(),
+                userId,
+                newPromotion.topics(),
+                newPromotion.resources(),
+                newPromotion.participants(),
+                newPromotion.creation_date()
+        );
 
+        return newPromotion;
+    }*/
 
-        LocalDateTime localDateTimeNow = LocalDateTime.now();
-        newPromotion.setCreationDate(localDateTimeNow);
-        newPromotion.setAuthor(user);
-
-        // Enregistrer la promotion créée dans la base de données
-        Promotion createdPromotion = promotionRepository.save(newPromotion);
-
-        // Convertir la promotion créée en PromotionDTO
-        PromotionDTO createdPromotionDTO = promotionDTOMapper.convertToDTO(createdPromotion);
-
-        return createdPromotionDTO;
-    }
-*/
 
     public List<PromotionDTO> findAllPromotions() {
         List<Promotion> promotions = promotionRepository.findAll();
@@ -63,10 +63,10 @@ public class PromotionService {
 
 
     public void setPromotionRepository(PromotionRepository promotionRepository) {
-        this.promotionRepository = promotionRepository;
+        PromotionService.promotionRepository = promotionRepository;
     }
 
     public void setPromotionDTOMapper(PromotionDTOMapper promotionDTOMapper) {
-        this.promotionDTOMapper = promotionDTOMapper;
+        PromotionService.promotionDTOMapper = promotionDTOMapper;
     }
 }

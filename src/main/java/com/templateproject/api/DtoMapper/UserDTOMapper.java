@@ -1,5 +1,6 @@
-package com.templateproject.api.DTO;
+package com.templateproject.api.DtoMapper;
 
+import com.templateproject.api.DTO.UserDTO;
 import org.springframework.stereotype.Service;
 import com.templateproject.api.entity.User;
 
@@ -15,7 +16,12 @@ public class UserDTOMapper implements Function<User, UserDTO> {
                 user.getEmail(),
                 user.getRole(),
                 user.getTopics(),
-                user.getResources()
+                user.getResources(),
+                user.getPromotions(),
+                user.getAnswers(),
+                user.getPromotionsParticipants(),
+                user.getEventsParticipated(),
+                user.getEventsCreated()
 
 
 

@@ -22,7 +22,8 @@ public class Promotion {
     @Column(nullable = true, name = "name")
     private String name;
 
-    @Lob @Column(nullable = true, name = "description")
+    @Lob
+    @Column(nullable = true, name = "description")
     private String description;
 
     @Column(name = "tag")
@@ -63,8 +64,8 @@ public class Promotion {
     }
 
     public Promotion(String name, String description, String tag, Float rating, String difficulty, String type,
-            LocalDateTime creationDate, Set<User> participants, List<Resource> resources, List<Topic> topics,
-            User author) {
+                     LocalDateTime creationDate, Set<User> participants, List<Resource> resources, List<Topic> topics,
+                     User author) {
         this.name = name;
         this.description = description;
         this.tag = tag;

@@ -1,5 +1,6 @@
-package com.templateproject.api.DTO;
+package com.templateproject.api.DtoMapper;
 
+import com.templateproject.api.DTO.PromotionDTO;
 import com.templateproject.api.entity.Promotion;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class PromotionDTOMapper implements Function<Promotion, PromotionDTO> {
     }
 
     public PromotionDTO convertToEntity(PromotionDTO newPromotionDTO) {
-        return (newPromotionDTO);
+        return newPromotionDTO;
     }
 
 

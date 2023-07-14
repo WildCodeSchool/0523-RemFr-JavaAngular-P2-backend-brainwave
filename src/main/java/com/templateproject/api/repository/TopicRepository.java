@@ -12,5 +12,5 @@ import java.util.UUID;
 public interface TopicRepository extends JpaRepository<Topic, UUID> {
     List<Topic> findByPromotionId(UUID promoId);
 
-    List<Topic> findByAuthor(User author);
+    List<Topic> findByAuthorId(UUID author);
 }
