@@ -6,9 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -26,6 +25,9 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Valid
+    @NotEmpty(message = "Lastname is mandatory")
+    @NotBlank(message = "Lastname is mandatory")
     @Column(nullable = false, name ="lastname")
     private String lastname;
 
@@ -36,9 +38,17 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Valid
+    @NotEmpty(message = "Email is mandatory")
+    @NotBlank(message = "Email is mandatory")
+    @Email(message = "Email should be valid")
     @Column(nullable = false, unique=true, name="email")
     private String email;
 
+    @Valid
+    @NotEmpty(message = "Password is mandatory")
+    @NotBlank(message = "Password is mandatory")
+    @Size(min = 8, message = "Password should have at least 8 characters")
     @Column(nullable = false, name="password")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
