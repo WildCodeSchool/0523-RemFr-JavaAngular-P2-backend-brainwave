@@ -5,11 +5,11 @@ import com.templateproject.api.entity.User;
 import com.templateproject.api.repository.UserRepository;
 import com.templateproject.api.service.TokenService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -39,9 +38,24 @@ public class AuthenticationController {
         this.tokenService = tokenServiceInjected;
     }
 
+    private boolean checkCookieToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("token")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public User register(@Valid @RequestBody User user) {
+    public User register(@Valid @RequestBody User user, HttpServletRequest request) {
+        if (checkCookieToken(request)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must logout before registering");
+        }
 
         user.setRole(Role.STUDENT);
 
@@ -53,7 +67,10 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public User login(@RequestBody User user, HttpServletResponse response) {
+    public User login(@RequestBody User user, HttpServletResponse response, HttpServletRequest request) {
+        if (checkCookieToken(request)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must logout before registering");
+        }
         Authentication authentication = this.authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
         var jwt = tokenService.generateToken(authentication);
@@ -62,10 +79,10 @@ public class AuthenticationController {
         }
         Cookie cookie = new Cookie("token", jwt);
         cookie.setSecure(true);
-        cookie.setHttpOnly(true);
+        cookie.setHttpOnly(false);
         cookie.getValue();
         cookie.setPath("/");
-        cookie.setMaxAge(60);
+        cookie.setMaxAge(60 * 60);
         response.addCookie(cookie);
         return (User) authentication.getPrincipal();
     }
