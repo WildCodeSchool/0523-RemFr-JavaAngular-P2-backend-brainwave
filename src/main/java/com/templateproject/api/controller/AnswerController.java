@@ -101,7 +101,7 @@ public class AnswerController {
                                                   @RequestBody @Validated Answer answerDTO) {
         Answer updatedAnswer = answerRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Answer not found : +id"));
+                        HttpStatus.NOT_FOUND, "Answer not found : " +id));
         BeanUtils.copyNonNullProperties(answerDTO, updatedAnswer);
         Answer savedAnswer = answerRepository.save(updatedAnswer);
         AnswerDTO updatedAnswerDTO = answerDTOMapper.convertToDTO(savedAnswer);

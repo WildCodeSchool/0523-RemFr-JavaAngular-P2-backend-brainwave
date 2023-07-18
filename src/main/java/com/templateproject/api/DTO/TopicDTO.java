@@ -11,7 +11,7 @@ public record TopicDTO(
         UUID id,
         String title,
         Float upvote,
-        UUID promotion_id,
+        UUID promotionId,
         LocalDateTime creation_date,
         UUID authorId,
         String content,
@@ -27,11 +27,8 @@ public record TopicDTO(
         LocalDateTime creationDate;
     }
 
-    public void setAuthor(UUID authorId) {
-        UUID user;
-    }
 
-    public void setPromotion(UUID promotion_id) {
+    public void setPromotion(UUID promotionId) {
         UUID promotion;
     }
 }
