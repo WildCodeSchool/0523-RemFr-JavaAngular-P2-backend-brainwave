@@ -23,12 +23,5 @@ public record TopicDTO(
                 .collect(Collectors.toList());
     }
 
-    public void setCreationDate(LocalDateTime localDateTimeNow) {
-        LocalDateTime creationDate;
-    }
 
-
-    public void setPromotion(UUID promotionId) {
-        UUID promotion;
-    }
 }
