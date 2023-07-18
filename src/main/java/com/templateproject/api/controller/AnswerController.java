@@ -1,14 +1,15 @@
 package com.templateproject.api.controller;
 
-import com.templateproject.api.entity.Answer;
+import com.templateproject.api.DTO.AnswerDTO;
+import com.templateproject.api.DtoMapper.AnswerDTOMapper;
+import com.templateproject.api.entity.*;
 
-import com.templateproject.api.entity.Topic;
-import com.templateproject.api.entity.User;
 import com.templateproject.api.repository.AnswerRepository;
 
 import com.templateproject.api.repository.TopicRepository;
 import com.templateproject.api.repository.UserRepository;
 
+import com.templateproject.api.service.AnswerService;
 import com.templateproject.api.service.BeanUtils;
 import org.springframework.http.HttpStatus;
 
@@ -29,27 +30,44 @@ public class AnswerController {
     private final AnswerRepository answerRepository;
     private final UserRepository userRepository;
     private final TopicRepository topicRepository;
+    private final AnswerDTOMapper answerDTOMapper;
 
     public AnswerController(AnswerRepository answerRepository,
-            UserRepository userRepository,
-            TopicRepository topicRepository) {
+                            UserRepository userRepository,
+                            TopicRepository topicRepository,
+                            AnswerDTOMapper answerDTOMapper) {
         this.answerRepository = answerRepository;
         this.userRepository = userRepository;
         this.topicRepository = topicRepository;
+        this.answerDTOMapper = answerDTOMapper;
     }
 
-    @GetMapping("")
-    public List<Answer> index() {
-        return this.answerRepository.findAll();
+    @GetMapping("/users/{userId}")
+    public List<AnswerDTO> getAllAnswers(@PathVariable String userId) {
+        AnswerService answerService = new AnswerService(
+                answerRepository, answerDTOMapper, userRepository
+        );
+        return answerService.findAllAnswers();
     }
 
     @GetMapping("/{id}")
-    public Answer show(@PathVariable UUID id) {
-        Optional<Answer> optionalAnswer = this.answerRepository.findById(id);
-        if (optionalAnswer.isPresent()) {
-            return optionalAnswer.get();
+    public AnswerDTO getAnswersId(@PathVariable UUID id) {
+        Optional<AnswerDTO> optionalAnswerDTO = AnswerService.findById(id);
+        if (optionalAnswerDTO.isPresent()) {
+            return optionalAnswerDTO.get();
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Promotion not found" + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Answer not found : " + id);
+        }
+    }
+
+    @GetMapping("/{id}/users/{userId}")
+    public AnswerDTO getAnswersByUser(@PathVariable UUID id, @PathVariable String userId) {
+        Optional<AnswerDTO> optionalAnswerDTO = AnswerService.findById(id);
+        if (optionalAnswerDTO.isPresent()) {
+            return optionalAnswerDTO.get();
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Answer not found : " + id + "for user : " + userId);
         }
     }
 
@@ -77,14 +95,57 @@ public class AnswerController {
         return this.answerRepository.save(newAnswer);
     }
 
-
     @PutMapping("/{id}/topics/{topicId}")
-    public ResponseEntity<Answer> updateAnswer(@PathVariable UUID topicId, @PathVariable UUID id,
-            @RequestBody @Validated Answer updatedAnswer) {
-        return this.answerRepository.findById(id).map(answer -> {
-            BeanUtils.copyNonNullProperties(updatedAnswer, answer);
-            return ResponseEntity.ok(answerRepository.save(answer));
-        }).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<AnswerDTO> updateAnswer(@PathVariable UUID topicId,
+                                                  @PathVariable UUID id,
+                                                  @RequestBody @Validated Answer answerDTO) {
+        Answer updatedAnswer = answerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Answer not found : " +id));
+        BeanUtils.copyNonNullProperties(answerDTO, updatedAnswer);
+        Answer savedAnswer = answerRepository.save(updatedAnswer);
+        AnswerDTO updatedAnswerDTO = answerDTOMapper.convertToDTO(savedAnswer);
+        return ResponseEntity.ok(updatedAnswerDTO);
+    }
+
+    @PutMapping("/{id}/users/{userId}/add-authors")
+    public ResponseEntity<AnswerDTO> addAuthor(@PathVariable UUID id,
+                                               @PathVariable UUID userId,
+                                               @RequestBody @Validated Answer addAuthor) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User not found: " + userId));
+
+        Answer answer = answerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Answer not found: " + id));
+
+        answer.setUser(user);
+        BeanUtils.copyNonNullProperties(addAuthor, answer);
+        Answer updatedAnswer = answerRepository.save(answer);
+        AnswerDTO addedAuthorDTO = answerDTOMapper.convertToDTO(updatedAnswer);
+        return ResponseEntity.ok(addedAuthorDTO);
+    }
+
+    @PutMapping("/{id}/topics/{topicId}/add-topics")
+    public ResponseEntity<AnswerDTO> addTopic(@PathVariable UUID id,
+                                              @PathVariable UUID topicId,
+                                              @RequestBody @Validated Answer addPromotion) {
+
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Topic not found: " + topicId));
+
+        Answer answer = answerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Answer not found: " + id));
+
+        answer.setTopic(topic);
+        BeanUtils.copyNonNullProperties(addPromotion, answer);
+        Answer updatedAnswer = answerRepository.save(answer);
+        AnswerDTO addedAuthorDTO = answerDTOMapper.convertToDTO(updatedAnswer);
+        return ResponseEntity.ok(addedAuthorDTO);
     }
 
     @DeleteMapping("/{id}")

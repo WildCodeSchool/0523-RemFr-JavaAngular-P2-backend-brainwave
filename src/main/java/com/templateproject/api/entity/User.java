@@ -2,16 +2,11 @@ package com.templateproject.api.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -22,26 +17,27 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, name ="lastname")
+    @Column(nullable = false, name = "lastname")
     private String lastname;
 
-    @Column(nullable = false, name="firstname")
+    @Column(nullable = false, name = "firstname")
     private String firstname;
 
-    @Column(nullable = false, name="role")
+    @Column(nullable = false, name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(nullable = false, unique=true, name="email")
+    @Column(nullable = false, unique = true, name = "email")
     private String email;
 
-    @Column(nullable = false, name="password")
+    @Column(nullable = false, name = "password")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @OneToMany(mappedBy = "author")
     private List<Promotion> promotions;
-
+    @ManyToMany(mappedBy = "participants")
+    private Set<Promotion> promotionsParticipants = new HashSet<>();
     @OneToMany(mappedBy = "author")
     private List<Answer> answers;
 
@@ -60,9 +56,12 @@ public class User {
     public User() {
     }
 
-    public User(String lastname, String firstname, Role role, String email, String password, List<Promotion> promotions,
-            List<Answer> answers, List<Resource> resources, List<Topic> topics, List<Event> eventsCreated,
-            List<Event> eventsParticipated) {
+    public User(String lastname, String firstname,
+                Role role, String email, String password,
+                List<Promotion> promotions, List<Answer> answers,
+                List<Resource> resources, List<Topic> topics,
+                List<Event> eventsCreated,
+                List<Event> eventsParticipated) {
         this.lastname = lastname;
         this.firstname = firstname;
         this.role = role;
@@ -170,5 +169,13 @@ public class User {
 
     public void setEventsParticipated(List<Event> eventsParticipated) {
         this.eventsParticipated = eventsParticipated;
+    }
+
+    public Set<Promotion> getPromotionsParticipants() {
+        return promotionsParticipants;
+    }
+
+    public void setPromotionsParticipants(Set<Promotion> promotionsParticipants) {
+        this.promotionsParticipants = promotionsParticipants;
     }
 }
