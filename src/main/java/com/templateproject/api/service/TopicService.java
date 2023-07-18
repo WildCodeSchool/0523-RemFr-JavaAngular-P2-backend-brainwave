@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 @Service
 public class TopicService {
     private static TopicRepository topicRepository;
@@ -39,18 +40,21 @@ public class TopicService {
                 .map(topicDTOMapper::convertToDTO);
 
     }
+
     public List<TopicDTO> findByPromotionId(UUID promoId) {
         List<Topic> topics = topicRepository.findByPromotionId(promoId);
         return topics.stream()
                 .map(topicDTOMapper::convertToDTO)
                 .collect(Collectors.toList());
     }
+
     public List<TopicDTO> findByAuthorId(UUID userId) {
         List<Topic> topics = topicRepository.findByAuthorId(userId);
         return topics.stream()
                 .map(topicDTOMapper::convertToDTO)
                 .collect(Collectors.toList());
     }
+
     public void setTopicRepository(TopicRepository topicRepository) {
         this.topicRepository = topicRepository;
     }
@@ -58,7 +62,6 @@ public class TopicService {
     public void setTopicDTOMapper(TopicDTOMapper topicDTOMapper) {
         this.topicDTOMapper = topicDTOMapper;
     }
-
 
 
 }

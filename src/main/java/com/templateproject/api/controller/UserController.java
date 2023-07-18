@@ -28,17 +28,6 @@ public class UserController {
         this.userDTOMapper = userDTOMapper;
     }
 
-   /* @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userRepository.findAll());
-    }*/
-
-    /*@GetMapping("/{id}")
-     public ResponseEntity<User> getUserById(@PathVariable UUID id) {
-         return userRepository.findById(id)
-                 .map(ResponseEntity::ok)
-                 .orElseGet(() -> ResponseEntity.notFound().build());
-     }*/
     @GetMapping("/{id}")
     public UserDTO getUserById(@PathVariable UUID id) {
         Optional<UserDTO> optionalUserDTO = UserService.findById(id);
@@ -62,13 +51,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-    /*@PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody @Validated User updatedUser) {
-        return userRepository.findById(id).map(user -> {
-            BeanUtils.copyNonNullProperties(updatedUser, user);
-            return ResponseEntity.ok(userRepository.save(user));
-        }).orElse(ResponseEntity.notFound().build());
-    }*/
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable UUID id,
                                               @RequestBody @Validated User userDTO) {

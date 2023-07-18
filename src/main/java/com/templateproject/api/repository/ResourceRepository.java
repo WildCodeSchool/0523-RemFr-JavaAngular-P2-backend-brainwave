@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface ResourceRepository extends JpaRepository<Resource, UUID> {
     List<Resource> findByPromotionId(UUID promoId);
 
+    List<Resource> findByAuthorId(UUID userId);
 }

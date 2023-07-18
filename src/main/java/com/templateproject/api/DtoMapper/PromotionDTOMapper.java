@@ -30,7 +30,4 @@ public class PromotionDTOMapper implements Function<Promotion, PromotionDTO> {
     public PromotionDTO convertToEntity(PromotionDTO newPromotionDTO) {
         return newPromotionDTO;
     }
-
-
-
 }

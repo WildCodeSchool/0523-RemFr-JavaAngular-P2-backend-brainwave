@@ -8,19 +8,20 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-@Table(name="answer")
+@JsonIdentityInfo
+        (generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@Table(name = "answer")
 public class Answer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @Column(nullable = false, name ="content")
+    @Column(nullable = false, name = "content")
     @Lob
     private String content;
-    @Column(nullable = true, name ="upvote")
+    @Column(nullable = true, name = "upvote")
     private Float upvote;
-    @Column(nullable = false, name ="creation_date")
+    @Column(nullable = false, name = "creation_date")
     private LocalDateTime creationDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -29,13 +30,14 @@ public class Answer {
     private Topic topic;
 
     @ManyToOne
-    @JoinColumn(name ="author_id")
+    @JoinColumn(name = "author_id")
     private User author;
 
     public Answer() {
     }
 
-    public Answer(String content, Float upvote, LocalDateTime creationDate, Topic topic, User author) {
+    public Answer
+            (String content, Float upvote, LocalDateTime creationDate, Topic topic, User author) {
         this.content = content;
         this.upvote = upvote;
         this.creationDate = creationDate;
@@ -90,4 +92,5 @@ public class Answer {
     public void setUser(User author) {
         this.author = author;
     }
+
 }

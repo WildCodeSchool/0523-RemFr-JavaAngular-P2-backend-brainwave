@@ -9,16 +9,13 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
 public record PromotionDTO(UUID id,
                            String name,
                            String tag,
                            UUID authorId,
-                           @JsonIgnore  List<Topic> topics,
+                           @JsonIgnore List<Topic> topics,
                            @JsonIgnore List<Resource> resources,
-                           @JsonIgnore  Set<User> participants
-
-
+                           @JsonIgnore Set<User> participants
 
 ) {
     public LocalDateTime setCreationDate(LocalDateTime localDateTimeNow) {
@@ -30,11 +27,13 @@ public record PromotionDTO(UUID id,
                 .map(Resource::getId)
                 .collect(Collectors.toList());
     }
+
     public Set<UUID> getParticipantsIds() {
         return participants.stream()
                 .map(User::getId)
                 .collect(Collectors.toSet());
     }
+
     public List<UUID> getTopicIds() {
         return topics.stream()
                 .map(Topic::getId)

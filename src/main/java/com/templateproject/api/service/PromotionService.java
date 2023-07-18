@@ -11,14 +11,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 @Service
 public class PromotionService {
     private static PromotionRepository promotionRepository;
     private static PromotionDTOMapper promotionDTOMapper;
 
 
-
-    public PromotionService(PromotionRepository promotionRepository, PromotionDTOMapper promotionDTOMapper, UserRepository userRepository) {
+    public PromotionService(PromotionRepository promotionRepository,
+                            PromotionDTOMapper promotionDTOMapper,
+                            UserRepository userRepository) {
         PromotionService.promotionRepository = promotionRepository;
         PromotionService.promotionDTOMapper = promotionDTOMapper;
 
@@ -31,27 +33,6 @@ public class PromotionService {
 
     }
 
-   /* public static PromotionDTO createPromotion(UUID userId,
-                                               PromotionDTO newPromotion, LocalDateTime localDateTimeNow) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "User not found with ID: " + userId));
-
-
-        newPromotion = new PromotionDTO(
-                UUID.randomUUID(),
-                newPromotion.name(),
-                newPromotion.tag(),
-                userId,
-                newPromotion.topics(),
-                newPromotion.resources(),
-                newPromotion.participants(),
-                newPromotion.creation_date()
-        );
-
-        return newPromotion;
-    }*/
-
 
     public List<PromotionDTO> findAllPromotions() {
         List<Promotion> promotions = promotionRepository.findAll();
@@ -60,7 +41,6 @@ public class PromotionService {
                 .map(promotionDTOMapper::convertToDTO)
                 .collect(Collectors.toList());
     }
-
 
     public void setPromotionRepository(PromotionRepository promotionRepository) {
         PromotionService.promotionRepository = promotionRepository;

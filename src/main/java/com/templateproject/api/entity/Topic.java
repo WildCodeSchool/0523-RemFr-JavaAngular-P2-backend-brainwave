@@ -31,8 +31,7 @@ public class Topic {
     @Column(nullable = true, name = "upvote")
     private Float upvote;
 
-   @ManyToOne(fetch = FetchType.EAGER)
-
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "promotion_id")
     private Promotion promotion;
 
@@ -47,8 +46,10 @@ public class Topic {
     public Topic() {
     }
 
-    public Topic(String title, String content, LocalDateTime creationDate, Float upvote, Promotion promotion,
-            User author, List<Answer> answers) {
+    public Topic(String title, String content,
+                 LocalDateTime creationDate,
+                 Float upvote, Promotion promotion,
+                 User author, List<Answer> answers) {
         this.title = title;
         this.content = content;
         this.creationDate = creationDate;

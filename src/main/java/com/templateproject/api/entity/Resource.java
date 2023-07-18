@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-@Table(name="resource")
+@Table(name = "resource")
 public class Resource {
 
     @Id

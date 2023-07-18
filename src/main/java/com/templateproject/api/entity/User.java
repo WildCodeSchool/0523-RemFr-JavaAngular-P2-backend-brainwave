@@ -17,20 +17,20 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, name ="lastname")
+    @Column(nullable = false, name = "lastname")
     private String lastname;
 
-    @Column(nullable = false, name="firstname")
+    @Column(nullable = false, name = "firstname")
     private String firstname;
 
-    @Column(nullable = false, name="role")
+    @Column(nullable = false, name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(nullable = false, unique=true, name="email")
+    @Column(nullable = false, unique = true, name = "email")
     private String email;
 
-    @Column(nullable = false, name="password")
+    @Column(nullable = false, name = "password")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
@@ -56,9 +56,12 @@ public class User {
     public User() {
     }
 
-    public User(String lastname, String firstname, Role role, String email, String password, List<Promotion> promotions,
-            List<Answer> answers, List<Resource> resources, List<Topic> topics, List<Event> eventsCreated,
-            List<Event> eventsParticipated) {
+    public User(String lastname, String firstname,
+                Role role, String email, String password,
+                List<Promotion> promotions, List<Answer> answers,
+                List<Resource> resources, List<Topic> topics,
+                List<Event> eventsCreated,
+                List<Event> eventsParticipated) {
         this.lastname = lastname;
         this.firstname = firstname;
         this.role = role;

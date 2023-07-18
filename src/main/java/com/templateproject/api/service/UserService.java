@@ -31,6 +31,7 @@ public class UserService {
                 .map(userDTOMapper::convertToDTO)
                 .collect(Collectors.toList());
     }
+
     public static Optional<UserDTO> findUserById(UUID id) {
         return userRepository.findById(id)
                 .map(userDTOMapper::convertToDTO);

@@ -1,6 +1,5 @@
 package com.templateproject.api.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -46,7 +45,8 @@ public class Promotion {
             joinColumns = @JoinColumn(name = "promotion_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> participants = new HashSet<>();
-
+    @OneToMany(mappedBy = "promotion", cascade = CascadeType.REMOVE)
+    private List<Event> events;
     @OneToMany(mappedBy = "promotion", cascade = CascadeType.REMOVE)
     private List<Resource> resources = new ArrayList<>();
 

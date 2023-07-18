@@ -1,5 +1,6 @@
 package com.templateproject.api.controller;
 
+
 import com.templateproject.api.DTO.TopicDTO;
 import com.templateproject.api.DtoMapper.TopicDTOMapper;
 import com.templateproject.api.entity.Promotion;
@@ -39,12 +40,6 @@ public class TopicController {
         this.topicDTOMapper = topicDTOMapper;
     }
 
-    /*
-     * @GetMapping("/promotions/{id}")
-     * public List<Topic> index() {
-     * return topicRepository.findAll();
-     * }
-     */
     @GetMapping("/promotions/{id}")
     public List<TopicDTO> findAllTopics(@PathVariable("id") UUID promotionId) {
         TopicService topicService = new TopicService(topicRepository, topicDTOMapper);
@@ -77,34 +72,10 @@ public class TopicController {
                                           @PathVariable String id) {
         TopicService topicService = new TopicService(topicRepository, topicDTOMapper);
         List<TopicDTO> topicDTOs = topicService.findByAuthorId(userId);
-        // .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User
-        // not found: " + userId));
+
 
         return topicDTOs;
     }
-   /* @PostMapping("/promotions/{promoId}/user/{userId}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public TopicDTO createTopic(
-            @PathVariable UUID userId,
-            @PathVariable UUID promoId,
-            @RequestBody TopicDTO newTopicDTO) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "User not found: " + userId));
-        Promotion promotion = promotionRepository.findById(promoId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Promotion not found: " + promoId));
-
-        LocalDateTime localDateTimeNow = LocalDateTime.now();
-        newTopicDTO.setCreationDate(localDateTimeNow);
-        newTopicDTO.setAuthor(user.getId());
-        newTopicDTO.setPromotion(promotion.getId());
-
-        Topic newTopic = topicDTOMapper.convertToEntity(newTopicDTO);
-        Topic savedTopic = topicRepository.save(newTopic);
-
-        return topicDTOMapper.convertToDTO(savedTopic);
-    }*/
 
     @PostMapping("/promotions/{promoId}/user/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -128,7 +99,6 @@ public class TopicController {
         return this.topicRepository.save(newTopic);
     }
 
-    //1166c18c-2c24-496c-8ab0-00a05519424a b3079e73-8624-41c8-b6f0-fb81427a4a74 b07482f1-42bd-456d-bc4a-88e4e720c9d3
     @PutMapping("/{id}/promotions/{promoId}")
     public ResponseEntity<TopicDTO> updateTopic(
             @PathVariable UUID promoId,
@@ -142,6 +112,48 @@ public class TopicController {
 
         TopicDTO updatedTopicDTO = topicDTOMapper.convertToDTO(savedTopic);
         return ResponseEntity.ok(updatedTopicDTO);
+    }
+
+    @PutMapping("/{id}/users/{userId}/add-authors")
+    public ResponseEntity<TopicDTO> addAuthor(@PathVariable UUID id,
+                                              @PathVariable UUID userId,
+                                              @RequestBody @Validated Topic addAuthor) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User not found: " + userId));
+
+        Topic topic = topicRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Topic not found: " + id));
+
+        topic.setAuthor(user);
+
+        BeanUtils.copyNonNullProperties(addAuthor, topic);
+        Topic updatedTopic = topicRepository.save(topic);
+        TopicDTO addedAuthorDTO = topicDTOMapper.convertToDTO(updatedTopic);
+        return ResponseEntity.ok(addedAuthorDTO);
+    }
+
+    @PutMapping("/{id}/promotions/{promoId}/add-promotions")
+    public ResponseEntity<TopicDTO> addPromotion(@PathVariable UUID id,
+                                                 @PathVariable UUID promoId,
+                                                 @RequestBody @Validated Topic addPromotion) {
+
+        Promotion promotion = promotionRepository.findById(promoId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Promotion not found: " + promoId));
+
+        Topic topic = topicRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Topic not found: " + id));
+
+        topic.setPromotion(promotion);
+
+        BeanUtils.copyNonNullProperties(addPromotion, topic);
+        Topic updatedTopic = topicRepository.save(topic);
+        TopicDTO addedAuthorDTO = topicDTOMapper.convertToDTO(updatedTopic);
+        return ResponseEntity.ok(addedAuthorDTO);
     }
 
     @DeleteMapping("/{id}")

@@ -2,9 +2,6 @@ package com.templateproject.api.DTO;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.templateproject.api.entity.Answer;
-import com.templateproject.api.entity.Promotion;
-import com.templateproject.api.entity.User;
-
 
 import java.time.LocalDateTime;
 import java.util.*;
