@@ -72,7 +72,6 @@ public class PromotionController {
         LocalDateTime localDateTimeNow = LocalDateTime.now();
         newPromotion.setCreationDate(localDateTimeNow);
         newPromotion.setAuthor(user);
-
         return this.promotionRepository.save(newPromotion);
     }
 
