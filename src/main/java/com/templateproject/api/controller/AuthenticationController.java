@@ -21,7 +21,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "localhost:4200")
 public class AuthenticationController {
 
     private final UserRepository userRepository;
@@ -30,7 +29,7 @@ public class AuthenticationController {
 
     public AuthenticationController(
             UserRepository userRepositoryInjected,
-            @Qualifier("authenticationManager") AuthenticationManager authManagerInjected,
+            AuthenticationManager authManagerInjected,
             TokenService tokenServiceInjected
     ) {
         this.userRepository = userRepositoryInjected;

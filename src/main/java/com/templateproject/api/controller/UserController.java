@@ -18,7 +18,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "localhost:4200", allowCredentials = "true")
 public class UserController {
 
     private final UserRepository userRepository;
