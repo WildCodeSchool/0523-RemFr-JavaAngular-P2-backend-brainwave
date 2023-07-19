@@ -1,37 +1,43 @@
 package com.templateproject.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name="answer")
+@JsonIdentityInfo
+        (generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@Table(name = "answer")
 public class Answer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @Column(nullable = false, name ="content")
+    @Column(nullable = false, name = "content")
     @Lob
     private String content;
-    @Column(nullable = true, name ="upvote")
-    private Integer upvote;
-    @Column(nullable = false, name ="creation_date")
+    @Column(nullable = true, name = "upvote")
+    private Float upvote;
+    @Column(nullable = false, name = "creation_date")
     private LocalDateTime creationDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
+
     @JoinColumn(name = "topic_id")
     private Topic topic;
 
     @ManyToOne
-    @JoinColumn(name ="author_id")
+    @JoinColumn(name = "author_id")
     private User author;
 
     public Answer() {
     }
 
-    public Answer(String content, Integer upvote, LocalDateTime creationDate, Topic topic, User author) {
+    public Answer
+            (String content, Float upvote, LocalDateTime creationDate, Topic topic, User author) {
         this.content = content;
         this.upvote = upvote;
         this.creationDate = creationDate;
@@ -55,11 +61,11 @@ public class Answer {
         this.content = content;
     }
 
-    public Integer getUpvote() {
+    public Float getUpvote() {
         return upvote;
     }
 
-    public void setUpvote(Integer upvote) {
+    public void setUpvote(Float upvote) {
         this.upvote = upvote;
     }
 
@@ -86,4 +92,5 @@ public class Answer {
     public void setUser(User author) {
         this.author = author;
     }
+
 }

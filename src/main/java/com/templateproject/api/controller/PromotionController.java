@@ -1,18 +1,26 @@
 package com.templateproject.api.controller;
 
+import com.templateproject.api.DTO.PromotionDTO;
+import com.templateproject.api.DtoMapper.PromotionDTOMapper;
 import com.templateproject.api.entity.Promotion;
 import com.templateproject.api.entity.User;
+import com.templateproject.api.entity.Resource;
 import com.templateproject.api.repository.PromotionRepository;
+import com.templateproject.api.repository.ResourceRepository;
 import com.templateproject.api.repository.UserRepository;
-
+import com.templateproject.api.service.BeanUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import com.templateproject.api.service.PromotionService;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/promotions")
@@ -20,23 +28,30 @@ import java.util.*;
 public class PromotionController {
 
     private final PromotionRepository promotionRepository;
+    private final PromotionDTOMapper promotionDTOMapper;
 
-    public PromotionController(PromotionRepository promotionRepository) {
+    public PromotionController(PromotionRepository promotionRepository,
+                               PromotionDTOMapper promotionDTOMapper) {
         this.promotionRepository = promotionRepository;
+        this.promotionDTOMapper = promotionDTOMapper;
     }
 
     @GetMapping("")
-    public List<Promotion> index() {
-        return this.promotionRepository.findAll();
+    public List<PromotionDTO> getAllPromotions() {
+        PromotionService promotionService = new PromotionService(
+                promotionRepository, promotionDTOMapper, userRepository);
+        List<PromotionDTO> promotionDTOs = promotionService.findAllPromotions();
+        return promotionDTOs;
     }
 
+
     @GetMapping("/{id}")
-    public Promotion show(@PathVariable UUID id) {
-        Optional<Promotion> optionalPromotion = this.promotionRepository.findById(id);
-        if (optionalPromotion.isPresent()) {
-            return optionalPromotion.get();
+    public PromotionDTO show(@PathVariable UUID id) {
+        Optional<PromotionDTO> optionalPromotionDTO = PromotionService.findPromotionById(id);
+        if (optionalPromotionDTO.isPresent()) {
+            return optionalPromotionDTO.get();
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Promotion not found" + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Promotion not found" + id);
         }
     }
 
@@ -57,37 +72,68 @@ public class PromotionController {
         LocalDateTime localDateTimeNow = LocalDateTime.now();
         newPromotion.setCreationDate(localDateTimeNow);
         newPromotion.setAuthor(user);
-
-
         return this.promotionRepository.save(newPromotion);
     }
 
-    @PutMapping("/{id}/{userId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public Promotion updatePromotion(
-            @PathVariable UUID id,
+    @PutMapping("/{id}/users/{userId}")
+    public ResponseEntity<PromotionDTO> updatePromotion(
             @PathVariable UUID userId,
-            @RequestBody Promotion updatedPromotion) {
-        User user = userRepository
-                .findById(userId)
+            @PathVariable UUID id,
+            @RequestBody @Validated PromotionDTO promotionDTO) {
+
+        Promotion updatedPromotion = promotionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "User not found!" + userId));
+                        HttpStatus.NOT_FOUND, "Promotion not found: " + id));
 
-        Promotion updatePromotion = promotionRepository
-                .findById(id)
+        BeanUtils.copyNonNullProperties(promotionDTO, updatedPromotion);
+        Promotion savedPromotion = promotionRepository.save(updatedPromotion);
+        PromotionDTO updatedPromotionDTO = promotionDTOMapper.convertToDTO(savedPromotion);
+        return ResponseEntity.ok(updatedPromotionDTO);
+    }
+
+
+    @PutMapping("/{id}/users/{userId}/add-participants")
+    public ResponseEntity<PromotionDTO> addParticipants(@PathVariable UUID id,
+                                                        @PathVariable UUID userId,
+                                                        @RequestBody
+                                                        @Validated Promotion addParticipants) {
+
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Not Found" + userId));
+        Promotion addParticipantsPromotion = promotionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND));
+                        HttpStatus.NOT_FOUND, "Promotion not found: " + id));
+        addParticipants.getParticipants().add(user);
+        BeanUtils.copyNonNullProperties(addParticipants, addParticipantsPromotion);
+        Promotion addedParticipants = promotionRepository.save(addParticipantsPromotion);
+        PromotionDTO addParticipantsPromotionDTO = promotionDTOMapper
+                .convertToDTO(addedParticipants);
+        return ResponseEntity.ok(addParticipantsPromotionDTO);
 
-        LocalDateTime localDateTimeNow = LocalDateTime.now();
-        updatePromotion.setCreationDate(localDateTimeNow);
-        updatePromotion.setName(updatedPromotion.getName());
-        updatePromotion.setDescription(updatedPromotion.getDescription());
-        updatePromotion.setTag(updatedPromotion.getTag());
-        updatePromotion.setRating(updatedPromotion.getRating());
-        updatePromotion.setDifficulty(updatedPromotion.getDifficulty());
-        updatePromotion.setType(updatedPromotion.getType());
+    }
 
-        return this.promotionRepository.save(updatePromotion);
+    @Autowired
+    ResourceRepository resourceRepository;
+
+    @PutMapping("/{id}/resources/{resourceId}/add-resources")
+    public ResponseEntity<PromotionDTO> addResources(@PathVariable UUID id,
+                                                     @PathVariable UUID resourceId,
+                                                     @RequestBody
+                                                     @Validated Promotion addResources) {
+
+        Resource resource = resourceRepository.findById(resourceId).orElseThrow(
+                () -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Not Found" + resourceId));
+        Promotion addResourcesPromotion = promotionRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Promotion not found: " + id));
+        addResources.getResources().add(resource);
+        BeanUtils.copyNonNullProperties(addResources, addResourcesPromotion);
+        Promotion addedResources = promotionRepository.save(addResourcesPromotion);
+        PromotionDTO addParticipantsResourcesDTO = promotionDTOMapper
+                .convertToDTO(addedResources);
+        return ResponseEntity.ok(addParticipantsResourcesDTO);
 
     }
 
@@ -97,9 +143,14 @@ public class PromotionController {
     }
 
     @PostMapping("/search")
-    public List<Promotion> search(@RequestBody Map<String, String> body) {
+    public List<PromotionDTO> search(@RequestBody Map<String, String> body) {
         String searchTerm = body.get("content");
-        return promotionRepository.findPromotionsByTagOrNameContaining(searchTerm ,searchTerm);
+        List<Promotion> promotions = promotionRepository
+                .findPromotionsByTagOrNameContaining(searchTerm, searchTerm);
+        return promotions.stream()
+                .map(promotionDTOMapper::convertToDTO)
+                .collect(Collectors.toList());
     }
+
 
 }
