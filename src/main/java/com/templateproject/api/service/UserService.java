@@ -9,14 +9,24 @@ import com.templateproject.api.DTO.UserDTO;
 import com.templateproject.api.DtoMapper.UserDTOMapper;
 import com.templateproject.api.entity.User;
 import com.templateproject.api.repository.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
-public class UserService {
+@Service
+public class UserService implements UserDetailsService {
     private static UserRepository userRepository;
     private static UserDTOMapper userDTOMapper;
 
     public UserService(UserRepository userRepository, UserDTOMapper userDTOMapper) {
-        this.userRepository = userRepository;
-        this.userDTOMapper = userDTOMapper;
+        UserService.userRepository = userRepository;
+        UserService.userDTOMapper = userDTOMapper;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return (UserDetails) UserService.userRepository.findByEmail(username);
     }
 
     public static Optional<UserDTO> findById(UUID id) {
@@ -39,10 +49,10 @@ public class UserService {
     }
 
     public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
+        UserService.userRepository = userRepository;
     }
 
     public void setUserDTOMapper(UserDTOMapper userDTOMapper) {
-        this.userDTOMapper = userDTOMapper;
+        UserService.userDTOMapper = userDTOMapper;
     }
 }
