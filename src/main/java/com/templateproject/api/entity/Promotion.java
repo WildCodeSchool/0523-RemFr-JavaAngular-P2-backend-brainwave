@@ -22,12 +22,14 @@ public class Promotion {
     private String name;
 
     @Lob
-    @Column(nullable = true, name = "description")
+    @Column(nullable = true, name = "description", length = 1000)
     private String description;
+
 
     @Column(name = "tag")
     private String tag;
-
+    @Column(name = "picture")
+    private String picture;
     @Column(nullable = true, name = "rating")
     private Float rating;
 
@@ -173,6 +175,22 @@ public class Promotion {
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
     }
 
     @Override
