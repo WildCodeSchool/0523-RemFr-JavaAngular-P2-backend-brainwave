@@ -1,7 +1,9 @@
 package com.templateproject.api.controller;
 
+import com.templateproject.api.DTO.PromotionDTO;
 import com.templateproject.api.DTO.UserDTO;
 import com.templateproject.api.DtoMapper.UserDTOMapper;
+import com.templateproject.api.entity.Promotion;
 import com.templateproject.api.entity.User;
 import com.templateproject.api.repository.UserRepository;
 import com.templateproject.api.service.BeanUtils;
@@ -13,8 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -71,4 +75,14 @@ public class UserController {
             return ResponseEntity.noContent().build();
         }).orElseGet(() -> ResponseEntity.notFound().build());
     }
+    @PostMapping("/search")
+    public List<UserDTO> search(@RequestBody Map<String, String> body) {
+        String searchTerm = body.get("content");
+        List<User> users = userRepository
+                .findUserByFirstnameIsContainingOrLastnameIsContainingIgnoreCase(searchTerm, searchTerm);
+        return users.stream()
+                .map(userDTOMapper::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
 }
