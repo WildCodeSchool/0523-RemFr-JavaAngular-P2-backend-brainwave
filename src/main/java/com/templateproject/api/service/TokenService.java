@@ -1,5 +1,6 @@
 package com.templateproject.api.service;
 
+import com.templateproject.api.entity.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.*;
@@ -31,6 +32,7 @@ public class TokenService {
                 .issuedAt(now)
                 .expiresAt(now.plus(60, ChronoUnit.MINUTES))
                 .subject(auth.getName())
+                .claim("userId", String.valueOf(((User) auth.getPrincipal()).getId()))
                 .claim("scope", scope)
                 .build();
 

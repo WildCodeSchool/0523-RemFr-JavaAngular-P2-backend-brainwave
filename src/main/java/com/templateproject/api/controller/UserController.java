@@ -62,7 +62,6 @@ public class UserController {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Promotion not found: " + id));
 
-        BeanUtils.copyNonNullProperties(userDTO, updatedUser);
         User savedUser = userRepository.save(updatedUser);
 
         UserDTO updatedPromotionDTO = userDTOMapper.convertToDTO(savedUser);
