@@ -73,6 +73,7 @@ public class UserController {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Promotion not found: " + id));
 
+        BeanUtils.copyNonNullProperties(userDTO, updatedUser);
         User savedUser = userRepository.save(updatedUser);
 
         UserDTO updatedPromotionDTO = userDTOMapper.convertToDTO(savedUser);
@@ -126,6 +127,7 @@ public class UserController {
             return ResponseEntity.noContent().build();
         }).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
     @PostMapping("/search")
     public List<UserDTO> search(@RequestBody Map<String, String> body) {
         String searchTerm = body.get("content");

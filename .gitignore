@@ -35,4 +35,5 @@ build/
 .vscode/
 
 application-dev.properties
+*.png
 
