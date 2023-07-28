@@ -25,11 +25,15 @@ public class Promotion {
     @Column(nullable = true, name = "description", length = 1000)
     private String description;
 
+    @Column(nullable = true, name = "banner")
+    private String banner;
 
     @Column(name = "tag")
     private String tag;
+
     @Column(name = "picture")
     private String picture;
+
     @Column(nullable = true, name = "rating")
     private Float rating;
 
@@ -103,6 +107,14 @@ public class Promotion {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getBanner() {
+        return banner;
+    }
+
+    public void setBanner(String banner) {
+        this.banner = banner;
     }
 
     public String getTag() {

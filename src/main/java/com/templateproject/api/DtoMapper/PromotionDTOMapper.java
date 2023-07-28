@@ -17,6 +17,7 @@ public class PromotionDTOMapper implements Function<Promotion, PromotionDTO> {
                 promotion.getTag(),
                 promotion.getAuthor().getId(),
                 promotion.getDescription(),
+                promotion.getBanner(),
                 promotion.getPicture(),
                 promotion.getCreationDate(),
                 promotion.getTopics(),
