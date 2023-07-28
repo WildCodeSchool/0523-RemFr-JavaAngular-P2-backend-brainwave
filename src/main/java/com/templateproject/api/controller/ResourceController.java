@@ -1,6 +1,7 @@
 package com.templateproject.api.controller;
 
 import com.templateproject.api.DTO.ResourceDTO;
+import com.templateproject.api.DTO.UserDTO;
 import com.templateproject.api.DtoMapper.ResourceDTOMapper;
 import com.templateproject.api.entity.Promotion;
 import com.templateproject.api.entity.Resource;
@@ -11,6 +12,7 @@ import com.templateproject.api.repository.ResourceRepository;
 import com.templateproject.api.repository.UserRepository;
 import com.templateproject.api.service.BeanUtils;
 import com.templateproject.api.service.ResourceService;
+import com.templateproject.api.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -52,7 +55,15 @@ public class ResourceController {
     public List<Resource> getResourceByPromoId(@PathVariable UUID promoId) {
         return this.resourceRepository.findByPromotionId(promoId);
     }
-
+    @GetMapping("/{resourceId}")
+    public ResourceDTO getId(@PathVariable UUID resourceId) {
+        Optional<ResourceDTO> optionalResourceDTO = ResourceService.findById(resourceId);
+        if (optionalResourceDTO.isPresent()) {
+            return optionalResourceDTO.get();
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found " + resourceId);
+        }
+    }
     @PostMapping("/promotions/{promoId}")
     @ResponseStatus(HttpStatus.CREATED)
     public Resource createResource(

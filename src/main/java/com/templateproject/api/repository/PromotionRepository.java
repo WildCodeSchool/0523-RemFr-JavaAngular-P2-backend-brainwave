@@ -11,4 +11,7 @@ import java.util.UUID;
 @Repository
 public interface PromotionRepository extends JpaRepository<Promotion, UUID> {
     List<Promotion> findPromotionsByTagOrNameContaining(String searchTagTerm,String searchNameTerm);
+
+    void deleteUserById(UUID userId);
+
 }

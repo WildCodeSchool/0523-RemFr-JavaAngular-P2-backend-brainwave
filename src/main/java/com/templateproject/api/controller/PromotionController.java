@@ -30,11 +30,13 @@ public class PromotionController {
 
     private final PromotionRepository promotionRepository;
     private final PromotionDTOMapper promotionDTOMapper;
+    private final PromotionService promotionService;
 
     public PromotionController(PromotionRepository promotionRepository,
-                               PromotionDTOMapper promotionDTOMapper) {
+                               PromotionDTOMapper promotionDTOMapper, PromotionService promotionService) {
         this.promotionRepository = promotionRepository;
         this.promotionDTOMapper = promotionDTOMapper;
+        this.promotionService = promotionService;
     }
 
     @GetMapping("")
@@ -143,6 +145,18 @@ public class PromotionController {
     public void delete(@PathVariable UUID id) {
         this.promotionRepository.deleteById(id);
     }
+    @DeleteMapping("/{id}/users/{userId}/delete-participant/{userToDeleteId}")
+    public Promotion delete(@PathVariable UUID id, @PathVariable UUID userId, @PathVariable UUID userToDeleteId) {
+        Promotion promotion = promotionRepository.findById(id).orElseThrow();
+        UUID authorId = promotion.getAuthor().getId();
+
+        if (userId.equals(authorId)) {
+            User userToDelete = userRepository.findById(userToDeleteId).orElseThrow();
+            promotion.getParticipants().remove(userToDelete);
+        }
+
+        return promotionRepository.save(promotion);
+    };
 
     @PostMapping("/search")
     public List<PromotionDTO> search(@RequestBody Map<String, String> body) {
