@@ -12,6 +12,8 @@ public record UserDTO(
         String firstname,
         String email,
         Enum role,
+        String avatar,
+        String description,
         @JsonIgnore List<Topic> topics,
         @JsonIgnore List<Resource> resources,
         @JsonIgnore List<Promotion> promotions,

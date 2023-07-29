@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/promotions")
-
 public class PromotionController {
 
     private final PromotionRepository promotionRepository;

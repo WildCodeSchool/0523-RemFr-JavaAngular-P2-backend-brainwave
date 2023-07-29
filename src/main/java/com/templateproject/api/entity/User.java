@@ -25,12 +25,21 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Valid
-    @NotEmpty(message = "Lastname is mandatory")
-    @NotBlank(message = "Lastname is mandatory")
+    @Column(nullable = true, name = "avatar")
+    private String avatar;
+
+    @Column(nullable = true, name = "description")
+    private String description;
+
+//    @Valid
+//    @NotEmpty(message = "Lastname is mandatory")
+//    @NotBlank(message = "Lastname is mandatory")
     @Column(nullable = false, name = "lastname")
     private String lastname;
 
+//    @Valid
+//    @NotEmpty(message = "firstname is mandatory")
+//    @NotBlank(message = "firstname is mandatory")
     @Column(nullable = false, name = "firstname")
     private String firstname;
 
@@ -38,16 +47,16 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Valid
-    @NotEmpty(message = "Email is mandatory")
-    @NotBlank(message = "Email is mandatory")
+    //@Valid
+//    @NotEmpty(message = "Email is mandatory")
+//    @NotBlank(message = "Email is mandatory")
     @Email(message = "Email should be valid")
     @Column(nullable = false, unique=true, name = "email")
     private String email;
 
-    @Valid
-    @NotEmpty(message = "Password is mandatory")
-    @NotBlank(message = "Password is mandatory")
+    //@Valid
+//    @NotEmpty(message = "Password is mandatory")
+//    @NotBlank(message = "Password is mandatory")
     @Size(min = 8, message = "Password should have at least 8 characters")
     @Column(nullable = false, name = "password")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -121,6 +130,22 @@ public class User implements UserDetails {
 
     public void setFirstname(String firstname) {
         this.firstname = firstname;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Role getRole() {
